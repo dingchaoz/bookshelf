@@ -6,7 +6,7 @@ Each project is self contained and has requires specific in a `requirements.txt`
 To make things isolated, for each project you will create a separate
 python virtual environment. This allows us to separate our dependancies and track them.
 
-You will need to have python 3.6 in your path.
+You will need to have python 3.7.4 in your path.
 
 If it is your first time in a project:
 ```
