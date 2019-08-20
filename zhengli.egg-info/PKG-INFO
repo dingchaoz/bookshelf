@@ -1,0 +1,10 @@
+Metadata-Version: 1.2
+Name: zhengli
+Version: 0.1.0
+Summary: a library that organizes books for you
+Home-page: UNKNOWN
+Author: Sarah Hudspeth, Dingchao Zhang
+License: MIT
+Description: UNKNOWN
+Platform: UNKNOWN
+Requires-Python: >=3.7.4
