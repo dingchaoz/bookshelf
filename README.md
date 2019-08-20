@@ -15,6 +15,16 @@ source .venv/bin/activate
 cd bookshelf
 pip install -r requirements.txt
 ```
+To install the our book organizing library(package named as zhengli for now), run:
+```
+pip install -e .
+```
+Confirm zhengli is installed correctly, run the following in Python terminal:
+```
+import zhengli
+from zhengli.core import dewey_decimal_api
+```
+
 ## WARNING that this line should only be run when a completely new virual environment is created:
 ```
 python -m venv .venv
