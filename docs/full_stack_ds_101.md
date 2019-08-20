@@ -91,39 +91,75 @@ I recommend to use Pytest framework which makes it easy to write small tests, an
   issues
 
 
+### Web server
+  flask, more to come
+
+
+### Serverless
+  lambda, more to come
+
 ### Docker
+  more to come
 
 ### Kubernetes
+  more to come
 
 
+## ML/DS/Stats/SQL knowledge
+
+### General ML:
+Highly recommend reading through Applied Predictive Modeling book.
+
+- Data scientist shall feel very comfortable describing the pros and cons of different algorithms, when and when not to use certain of them.
+
+![ML algorithms Family](ml_map.png)
+
+- Model Selection, Validation
+  example questions:
+  how does cross validation work?
+  how to select the right model?
+
+- Data manipulation
+  Expect to get lots of questions in data manipulation, typically data scientists spend more than 60% of the time cleansing, transforming data at work.
+  example questions:
+  how do we deal with outliers, nans, missing values, highly skewed variables, highly imbalanced datasets ?
 
 
-General ML:
-applied predictive modeling
-pros and cons of all ml algorithms, when and when not to use certain algorithms
-
-Deep learning:
-  CNN: cv
-    image segmentation
-    detection/ identification
-    opencv
-  RNN: nlp
-    LSTM
-    word embeddings
-    attention mechanism
-    transformer
-
-Reinforcement learning
-
-Recommendation System
-
-Time Series Analysis: ARIMA
-
-Optimization: linear programming, dynamic programming, multi-task optimization
+- Feature engineering
+  example questions:
+  what are the common techniques for feature engineering?
+  when shall we scale/standardize/normalize data?
+  how do we deal with high cardinality categorical features ?
+  how to find relevant features among 1000 variables?
+  how to deal with multicollinearity, why it matters?
 
 
-SQL:
-  nested query, self joins,
+### Deep learning:
+  - Computer Vision/ CNN:
+    - can explain different variants of CNN models used for image detection/ identification/ segmentation
+    - opencv
+  - NLP/ RNN:
+    - can explain and expand to elaborate on the pros/cons different variants LSTM/ word embeddings/ attention mechanism/ transformer
+
+  - Prepare to answer the data manipulation(image/text processing,etc), feature engineering(bag of words, embeddings, tf-idf, etc) related questions for deep learning models.
+
+### Reinforcement learning
+  more to come
+
+### Recommendation System
+  more to come
+
+### Time Series Analysis: ARIMA
+  more to come
+
+### Optimization: linear programming, dynamic programming, multi-task optimization
+  more to come
 
 
-Stats: A/B testing
+### SQL:
+  nested select query, different joins, window function(lag, lead, rank,etc)
+  https://drill.apache.org/docs/sql-window-functions-introduction/
+  https://sqlzoo.net
+
+
+### Stats: A/B testing
