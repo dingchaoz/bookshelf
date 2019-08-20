@@ -12,7 +12,7 @@ If it is your first time in a project:
 ```
 python -m venv .venv
 source .venv/bin/activate
-cd tsuba
+cd bookshelf
 pip install -r requirements.txt
 ```
 ## WARNING that this line should only be run when a completely new virual environment is created:
