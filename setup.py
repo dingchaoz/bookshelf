@@ -6,10 +6,14 @@ with open('requirements.txt', 'r') as req:
 setup(
     name='zhengli',
     packages=find_packages(),
-    version='0.1.0',
+    version='0.0.1',
     description='a library that organizes books for you',
     author='Sarah Hudspeth, Dingchao Zhang',
-    license='MIT',
     install_requires=install_requires,
     python_requires='>=3.7.4',
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ],
 )
