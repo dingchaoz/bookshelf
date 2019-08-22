@@ -38,6 +38,7 @@ def get_ISBN_from_title(title, author):
     # of the book--hopefully all additions have the same dewey decimal number
     right = None
     for x in results:
+        print(x)
         try:
             if 'authors' in x.keys():
                 if author in x['authors']:
@@ -54,20 +55,23 @@ def get_reponse(url):
 
 
 def extract_ddc(text):
-    dewey_pattern = re.compile('(\\d{3}/.\\d)')
-    ddc = dewey_pattern.findall(text)[0]
-    print('Dewey decimal code of the book is {}'.format(ddc))
+    try:
+        dewey_pattern = re.compile('(\\d{3}/.\\d)')
+        ddc = dewey_pattern.findall(text)[0]
+        print('Dewey decimal code of the book is {}'.format(ddc))
+    except:
+        print("dewey_decimal_not_found")
+        ddc = 000.0
     return ddc
 
 
 def get_ddc_api(ISBN=None, title=None, author_name=None):
-    if ISBN:
-        url = form_url(ISBN)
-    elif title & author_name:
-        ISBN = get_ISBN_from_title(title, author_name)
+    if ISBN != None:
         url = form_url(ISBN)
     else:
-        url = form_url(author_name)
+        ISBN = get_ISBN_from_title(title, author_name)
+        url = form_url(ISBN)
+
 
     response = get_reponse(url)
     ddc = extract_ddc(response)
