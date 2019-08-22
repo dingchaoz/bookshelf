@@ -25,7 +25,7 @@ def test_get_ISBN_from_title(title, author, exp_ISBN):
 
 @pytest.mark.parametrize(
     'title,, author, exp_ddc', [pytest.param(
-        'Silence','Shusaku Endo', '895.6'
+        'All the living', 'C. E. Morgan', '813/.6'
     )])
 def test_ddc_api(title, author, exp_ddc):
     res_ddc = get_ddc_api(title=title, author_name=author)

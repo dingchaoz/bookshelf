@@ -25,6 +25,22 @@ def form_url(ISBN='9780980200447'):
 
 
 def get_ISBN_from_title(title, author):
+    """returns the ISBN number for any given book title and author.
+
+    Parameters
+    ----------
+    title : string
+        Title of book for which we need the ISBN .
+    author : string
+        author of the book for which we need the ISBN.
+
+    Returns
+    -------
+    int
+        returns the ISBN number of the matching book (actually returns the
+        last entry in the json's ISBN number.)
+
+    """
 
     h = {'Authorization': '43360_fd60754106422e4ff2600025312a1118'}
     title = title.title()
@@ -38,7 +54,7 @@ def get_ISBN_from_title(title, author):
     # of the book--hopefully all additions have the same dewey decimal number
     right = None
     for x in results:
-        print(x)
+        #print(x)
         try:
             if 'authors' in x.keys():
                 if author in x['authors']:
