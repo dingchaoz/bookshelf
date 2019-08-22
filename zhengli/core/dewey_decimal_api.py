@@ -30,14 +30,15 @@ def get_reponse(url):
 
 
 def extract_ddc(text):
-    dewey_pattern = re.compile('(\d{3}/.\d)')
+    dewey_pattern = re.compile(r'(\d{3}/.\d)')
     ddc = dewey_pattern.findall(text)[0]
     print('Dewey decimal code of the book is {}'.format(ddc))
     return ddc
 
 
-def get_ddc_api(ISBN='9780980200447'):
+def get_ddc_api(ISBN=None):
     url = form_url(ISBN)
     response = get_reponse(url)
+    print(response)
     ddc = extract_ddc(response)
     return ddc

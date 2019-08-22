@@ -10,7 +10,7 @@ setup(
     description='a library that organizes books for you',
     author='Sarah Hudspeth, Dingchao Zhang',
     install_requires=install_requires,
-    python_requires='>=3.7.4',
+    python_requires='>=3.7.3',
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
