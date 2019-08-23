@@ -1,4 +1,3 @@
-import json
 import re
 
 import requests
@@ -24,8 +23,8 @@ def form_ddc_api_url(ISBN='9780980200447'):
     return url
 
 
-def get_ISBN_from_title(title, author):
-    """returns the ISBN number for any given book title and author.
+def get_books_from_title(title):
+    """returns list of books for any given book title.
 
     Parameters
     ----------
@@ -89,7 +88,7 @@ def get_ddc_api(ISBN=None, title=None, author_name=None):
     if ISBN is not None:
         url = form_ddc_api_url(ISBN)
     else:
-        response = get_ISBN_from_title(title, author_name)
+        response = get_books_from_title(title)
         ISBN = extract_IBSN_from_api_return(response, author_name)
         url = form_ddc_api_url(ISBN)
 
