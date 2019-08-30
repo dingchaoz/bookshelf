@@ -1,8 +1,0 @@
-README.md
-setup.py
-zhengli/__init__.py
-zhengli.egg-info/PKG-INFO
-zhengli.egg-info/SOURCES.txt
-zhengli.egg-info/dependency_links.txt
-zhengli.egg-info/requires.txt
-zhengli.egg-info/top_level.txt
