@@ -36,5 +36,5 @@ def write_csv_file(input_from_cloud, output_file):
 
 
 def get_book_titles_from_image(input_file_name, outpule_file_name='books.csv'):
-    shelves = [detext_test(x) for x in input_file_name]
+    shelves = [detect_test(x) for x in input_file_name]
     write_csv_file(shelves, "books.csv")

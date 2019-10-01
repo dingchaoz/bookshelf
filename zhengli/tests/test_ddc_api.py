@@ -2,8 +2,9 @@ import pytest
 
 # from zhengli.core.dewey_decimal_api import get_ddc_api
 from zhengli.core.title_of_book_api import get_ISBN_from_title, get_ddc_api
-from zhengli.core.image_title_author_scrape.py import detect_text,
+from zhengli.core.image_title_author_scrape import detect_text
 # tests get_ddc_api with a given ISBN to return a given Dewey Decimal Number
+
 @pytest.mark.parametrize(
     'ISBN,exp_ddc', [pytest.param(
         '9780980200447', '028/.9'
@@ -33,11 +34,12 @@ def test_ddc_api(title, author, exp_ddc):
     assert res_ddc == exp_ddc
 
 #
-
+'''
 @pytest.mark.parametrize(
     'path, exp_text_len', [pytest.param(
         'john_cheever_shelf.png', 1
     )])
 def test_detect_text(path, exp_text_len):
     res_text = detect_text(path)
-    assert True if res_text > exp_text_len
+    assert res_text > exp_text_len
+    '''

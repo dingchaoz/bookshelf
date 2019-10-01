@@ -47,24 +47,32 @@ def get_ISBN_from_title(title, author):
     #title = "%20".join( title.split() )
     resp = requests.get("https://api2.isbndb.com/books/{" \
              +title +"}", headers=h)
-
-
+    #print('Acquired following info about the book {}'.format(resp.))
+    print(resp.json())
     results = resp.json()['books']
+
     # note that this gets the last ISBN in the list--there maybe multiple copies
     # of the book--hopefully all additions have the same dewey decimal number
-    right = None
+    right = []
+    ddc = []
     for x in results:
         #print(x)
         try:
             if 'authors' in x.keys():
                 if author in x['authors']:
-                    right= x['isbn13']
+                    right.append(x['isbn13'])
+                    right.append(x['isbn'])
         except:
                 pass
 
     return right
 
-def get_reponse(url):
+#def get_isbn(text):
+
+#def get_classifications():
+
+
+def get_response(url):
     response = requests.get(url)
     print('Acquired following info about the book {}'.format(response.text))
     return response.text
@@ -72,23 +80,38 @@ def get_reponse(url):
 
 def extract_ddc(text):
     try:
-        dewey_pattern = re.compile('(\\d{3}/.\\d)')
+        dewey_pattern = re.compile(r'(\\d{3}/.\\d+?\/?d)')
         ddc = dewey_pattern.findall(text)[0]
         print('Dewey decimal code of the book is {}'.format(ddc))
     except:
-        print("dewey_decimal_not_found")
-        ddc = 000.0
+        if 'fiction' in text:
+            return 813.
+        else:
+            print("dewey_decimal_not_found")
+            ddc = None
     return ddc
 
 
 def get_ddc_api(ISBN=None, title=None, author_name=None):
-    if ISBN != None:
+    ddc = None
+    if ISBN is not None:
         url = form_url(ISBN)
+
     else:
+        print("getting ISBN")
+
         ISBN = get_ISBN_from_title(title, author_name)
-        url = form_url(ISBN)
-
-
-    response = get_reponse(url)
+        #print(ISBN)
+        for x in ISBN:
+            if not ddc:
+                url = form_url(x)
+                response = get_response(url)
+                ddc = extract_ddc(response)
+                if ddc is not None:
+                    return ddc
+                else:
+                    pass
+    response = get_response(url)
     ddc = extract_ddc(response)
+    print(ddc)
     return ddc
