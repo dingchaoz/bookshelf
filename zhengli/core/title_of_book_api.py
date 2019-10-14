@@ -1,9 +1,10 @@
 import re
+from collections import defaultdict
 
 import requests
 
 
-def form_ddc_api_url(ISBN='9780980200447'):
+def form_url(ISBN=None):
     """Formulate an url that will be sent to openlibrary.org/api'.
 
     Parameters
@@ -23,75 +24,151 @@ def form_ddc_api_url(ISBN='9780980200447'):
     return url
 
 
-def get_books_from_title(title):
-    """returns list of books for any given book title.
+def form_url_title(title='here is where we meet'):
+    """Formulate an url that will be sent to openlibrary.org/api'.
 
     Parameters
     ----------
-    title : string
-        Title of book for which we need the ISBN .
-    author : string
-        author of the book for which we need the ISBN.
+    ISBN : string
+        a string of book's ISBN.
 
     Returns
     -------
-    int
-        returns the ISBN number of the matching book (actually returns the
-        last entry in the json's ISBN number.)
+    string
+        An url that will be sent to openlibrary/org/api.
 
     """
+    title = "+".join(title.split())
+    url = 'https://isbnsearch.org/search?s=' + \
+        title
 
+    return url
+
+
+def get_ISBN_from_title(title):
     h = {'Authorization': '43360_fd60754106422e4ff2600025312a1118'}
     title = title.title()
-    # title = "%20".join( title.split() )
+
     resp = requests.get("https://api2.isbndb.com/books/{"
                         + title + "}", headers=h)
-
+    # print('Acquired following info about the book {}'.format(resp.))
+    # print(resp.json())
     results = resp.json()['books']
 
     return results
 
 
+def get_author_name(results):
+    authors = []
+    for x in results:
+        try:
+            if 'authors' in x.keys():
+                authors.append(x['authors'])
+        except Exception:
+            return "Jane Doe"
+
+    return authors
+
+
+def mode_authors(list_of_authors):
+    author_count = defaultdict(int)
+    for auth in list_of_authors:
+        for x in auth:
+            author_count[x] += 1
+
+    return max(author_count, key=lambda key: author_count[key])
+
+
 def extract_IBSN_from_api_return(results, author):
-    # note that this gets the last ISBN in the list--there maybe multiple copies
+    # note that this gets the last ISBN in the list--there maybe multiple
+    # copies
     # of the book--hopefully all additions have the same dewey decimal number
     ISBN = None
+    right = []
+    genre = None
+
     for x in results:
-        # print(x)
+        # print(x.keys)
         try:
-            if 'authors' in x.keys() and author in x['authors']:
-                ISBN = x['isbn13']
+            if 'authors' in x.keys():
+                if author in x['authors']:
+                    # print(x)
+                    right.append(x['isbn13'])
+                    right.append(x['isbn'])
+
+                    if 'subjects' in x.keys():
+                        genre = x['subjects']
+
         except Exception:
             pass
 
-    return ISBN
+    return right, genre
 
 
-def get_reponse(url):
+def get_response(url):
     response = requests.get(url)
-    print('Acquired following info about the book {}'.format(response.text))
+    # print('Acquired following info about the book {}'.format(response.text))
     return response.text
 
 
 def extract_ddc(text):
     try:
-        dewey_pattern = re.compile('(\\d{3}/.\\d)')
+        dewey_pattern = re.compile(r'(\\d{3}/.\\d+?\/?d)')
         ddc = dewey_pattern.findall(text)[0]
-        print('Dewey decimal code of the book is {}'.format(ddc))
+        # print('Dewey decimal code of the book is {}'.format(ddc))
     except Exception:
-        print("dewey_decimal_not_found")
-        ddc = 000.0
+        if 'fiction' in text:
+            return 813.
+        else:
+            print("dewey_decimal_not_found")
+            ddc = None
+
     return ddc
 
 
-def get_ddc_api(ISBN=None, title=None, author_name=None):
-    if ISBN is not None:
-        url = form_ddc_api_url(ISBN)
-    else:
-        response = get_books_from_title(title)
-        ISBN = extract_IBSN_from_api_return(response, author_name)
-        url = form_ddc_api_url(ISBN)
+def check_genre_ddc(genre):
+    for x in genre:
+        # print(x)
+        if x.lower() == 'fiction':
+            return 813.6
+        if x.lower() == 'nonfiction':
+            return 810
+        if x.lower() == 'journalism':
+            return '070'
 
-    response = get_reponse(url)
-    ddc = extract_ddc(response)
+    return 000.0
+
+
+def get_ddc_api(ISBN=None, title=None, author_name=None):
+
+    ddc = None
+
+    if ISBN is not None:
+        url = form_url(ISBN)
+        response = get_response(url)
+        ddc = extract_ddc(response)
+        return ddc
+
+    else:
+        response = get_ISBN_from_title(title)
+        if author_name is None:
+            author_name = mode_authors(get_author_name(response))
+            print(author_name)
+
+        ISBN, genre = extract_IBSN_from_api_return(response, author_name)
+        print(ISBN, genre)
+        # print(ISBN)
+        for x in ISBN:
+            if not ddc:
+                url = form_url(x)
+                response = get_response(url)
+                ddc = extract_ddc(response)
+                if ddc is not None:
+                    return ddc
+                else:
+                    pass
+        if ddc is None and genre is not None:
+            ddc = check_genre_ddc(genre)
+            return ddc
+
     return ddc
