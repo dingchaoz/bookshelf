@@ -1,6 +1,6 @@
 # google_api_image_scrape.py
-import io
 import csv
+import io
 
 
 def detect_text(path):
@@ -9,7 +9,7 @@ def detect_text(path):
     client = vision.ImageAnnotatorClient()
 
     with io.open(path, 'rb') as image_file:
-         content = image_file.read()
+        content = image_file.read()
 
     image = vision.types.Image(content=content)
 
@@ -21,6 +21,7 @@ def detect_text(path):
         text = None
 
     return text
+
 
 def write_csv_file(input_from_cloud, output_file):
 
@@ -36,5 +37,5 @@ def write_csv_file(input_from_cloud, output_file):
 
 
 def get_book_titles_from_image(input_file_name, outpule_file_name='books.csv'):
-    shelves = [detect_test(x) for x in input_file_name]
+    shelves = [detect_text(x) for x in input_file_name]
     write_csv_file(shelves, "books.csv")
