@@ -17,9 +17,8 @@ PAYLOAD_FILE = join(PAYLOAD_DIR, "wanted_shelf.png")
 
 @pytest.mark.parametrize(
     'title, author, exp_ISBN', [pytest.param(
-        'Silence', 'Shusaku Endo', (['9780720612868',
-                                     '0720612861', '9780870115356',
-                                     '0870115359'], ['Fiction']))])
+        'Silence', 'Shusaku Endo',
+        (['9782070414512', '2070414515'], ['Fiction']))])
 def test_get_ISBN_from_title(title, author, exp_ISBN):
     response = get_ISBN_from_title(title)
     res_isbn = extract_IBSN_from_api_return(response, author)
@@ -27,12 +26,13 @@ def test_get_ISBN_from_title(title, author, exp_ISBN):
 
 
 @pytest.mark.parametrize(
-    'title,, author, exp_ddc', [pytest.param(
-        'All the living', 'C. E. Morgan', 813.6
-    )])
-def test_ddc_api(title, author, exp_ddc):
-    res_ddc = get_ddc_api(title=title, author_name=author)
+    'title,author,exp_ddc,ISBN', [pytest.param(
+        'All the living', 'C. E. Morgan', 813.6, None
+    ), pytest.param(None, None, None, '9780557265749')])
+def test_ddc_api(title, author, exp_ddc, ISBN):
+    res_ddc, res_dict = get_ddc_api(ISBN=ISBN, title=title, author_name=author)
     assert res_ddc == exp_ddc
+    assert isinstance(res_dict, dict)
 
 
 @pytest.mark.parametrize(
@@ -54,12 +54,13 @@ def test_hashdiff_image(image1_url, image2_path):
 
 
 @pytest.mark.parametrize(
-    'title,image2_path',
+    'title,bookshelf_path',
     [pytest.param("Silence",
                   PAYLOAD_FILE)])
-def test_find_closest_image(title, image2_path):
+def test_find_closest_image(title, bookshelf_path):
     response = get_ISBN_from_title(title)
     image_urls = get_bookimages_url(response)
-    book_shelf = Image.open(image2_path)
+    book_shelf = Image.open(bookshelf_path)
     most_likely_author = find_closest_image(image_urls, book_shelf)
-    assert 'Becca Fitzpatrick' == most_likely_author
+    assert ['Shusaku Endo'] == most_likely_author or [
+        'Becca Fitzpatrick'] == most_likely_author

@@ -61,6 +61,25 @@ def get_ISBN_from_title(title):
     return results
 
 
+def order_results_into_dict(results):
+    '''
+    order the response from get_ISBN_from_title by title as a key
+    '''
+    dict_of_results = {}
+    for x in range(len(results)):
+        key = results[x]['title']
+        value = results[x]
+
+        if x == 0:
+            dict_of_results[key] = value
+        elif key not in dict_of_results.keys():
+            dict_of_results[key] = value
+        else:
+            key = str(key) + str(x)
+            dict_of_results[key] = value
+    return dict_of_results
+
+
 def get_author_name(results):
     authors = []
     for x in results:
@@ -196,10 +215,11 @@ def get_ddc_api(ISBN=None, title=None, author_name=None):
         url = form_url(ISBN)
         response = get_response(url)
         ddc = extract_ddc(response)
-        return ddc
+        return ddc, eval(response)
 
     else:
         response = get_ISBN_from_title(title)
+        dict_of_results = order_results_into_dict(response)
         if author_name is None:
             author_name = mode_authors(get_author_name(response))
             print(author_name)
@@ -213,11 +233,11 @@ def get_ddc_api(ISBN=None, title=None, author_name=None):
                 response = get_response(url)
                 ddc = extract_ddc(response)
                 if ddc is not None:
-                    return ddc
+                    return ddc, dict_of_results
                 else:
                     pass
         if ddc is None and genre is not None:
             ddc = check_genre_ddc(genre)
-            return ddc
+            return ddc, dict_of_results
 
-    return ddc
+    return ddc, dict_of_results
