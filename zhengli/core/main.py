@@ -47,7 +47,7 @@ def main():
     print("detected texts from books are the following {}".format(storage_book))
     books_info = []
     for i, book in storage_book.items():
-        ddc, dict_of_results = get_ddc_api(max(book, key=len))
+        ddc, dict_of_results = get_ddc_api(title=max(book, key=len))
         books_info.append((ddc, dict_of_results))
     print(books_info)
     return books_info

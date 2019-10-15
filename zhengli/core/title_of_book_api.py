@@ -54,10 +54,9 @@ def get_ISBN_from_title(title):
 
     resp = requests.get("https://api2.isbndb.com/books/{"
                         + title + "}", headers=h)
-    # print('Acquired following info about the book {}'.format(resp.))
-    # print(resp.json())
-    results = resp.json()['books']
 
+    results = resp.json()['books']
+    print('Acquired following info about the book {}'.format(results))
     return results
 
 

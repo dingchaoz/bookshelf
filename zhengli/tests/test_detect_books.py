@@ -16,12 +16,18 @@ PAYLOAD_DIR = join(abspath(dirname(dirname(dirname((__file__))))),
 IMAGE_FILE = join(PAYLOAD_DIR, "IMG_20190904_155939359.jpg")
 
 @pytest.mark.parametrize(
+    'num_books', [pytest.param(8)])
+def test_main(num_books):
+    result = main()
+    assert len(result) == num_books
+    assert isinstance(result, list)
+
+@pytest.mark.parametrize(
     'IMAGE_FILE,num_books', [pytest.param(IMAGE_FILE, 8)])
-def test_main(IMAGE_FILE, num_books):
+def test_get_storage_books(IMAGE_FILE, num_books):
     rectangles, img = get_rect_from_img(IMAGE_FILE)
     storage_book = get_text_from_rect(rectangles, img)
     assert len(storage_book) == num_books
-    # assert storage_book == {}
 
 @pytest.mark.parametrize(
     'img_path,num_books', [pytest.param(IMAGE_FILE, 9)])
