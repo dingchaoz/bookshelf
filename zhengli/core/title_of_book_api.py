@@ -208,7 +208,7 @@ def find_closest_image(urls, book_shelf):
 
 
 def get_ddc_api(ISBN=None, title=None, author_name=None):
-
+    print('calling api to get ddc ')
     ddc = None
 
     if ISBN is not None:
@@ -239,5 +239,5 @@ def get_ddc_api(ISBN=None, title=None, author_name=None):
         if ddc is None and genre is not None:
             ddc = check_genre_ddc(genre)
             return ddc, dict_of_results
-
+    print('ddc is {}'.format(ddc))
     return ddc, dict_of_results
