@@ -1,7 +1,10 @@
 import re
 from collections import defaultdict
+from io import BytesIO
 
+import imagehash
 import requests
+from PIL import Image
 
 
 def form_url(ISBN=None):
@@ -68,6 +71,18 @@ def get_author_name(results):
             return "Jane Doe"
 
     return authors
+
+
+def get_bookimages_url(results):
+    image_urls = []
+    for x in results:
+        try:
+            if 'image' in x.keys() and 'authors' in x.keys():
+                image_urls.append((x['image'], x['authors']))
+        except Exception:
+            pass
+
+    return image_urls
 
 
 def mode_authors(list_of_authors):
@@ -137,6 +152,40 @@ def check_genre_ddc(genre):
             return '070'
 
     return 000.0
+
+
+def get_image_book(image_url):
+    '''
+    Open up an image by its url
+    '''
+    response = requests.get(image_url)
+    img = Image.open(BytesIO(response.content))
+    return img
+
+
+def get_hashdiff_image(img1, img2):
+    '''
+    Get the absolute differene bewteen hashed images
+    '''
+    hash = imagehash.average_hash(img1)
+    otherhash = imagehash.average_hash(img2)
+    return abs(hash - otherhash)
+
+
+def find_closest_image(urls, book_shelf):
+    most_likely_author = None
+    min_diff = 1e6
+    for url, author in urls:
+        try:
+            candidate_img = get_image_book(url)
+            diff = get_hashdiff_image(candidate_img, book_shelf)
+            if diff < min_diff:
+                min_diff = diff
+                most_likely_author = author
+        except Exception:
+            pass
+
+    return most_likely_author
 
 
 def get_ddc_api(ISBN=None, title=None, author_name=None):
