@@ -190,13 +190,13 @@ def get_hashdiff_image(img1, img2):
     return abs(hash - otherhash)
 
 
-def find_closest_image(urls, book_shelf):
+def find_closest_image(urls, spine_image):
     most_likely_author = None
     min_diff = 1e6
     for url, author in urls:
         try:
             candidate_img = get_image_book(url)
-            diff = get_hashdiff_image(candidate_img, book_shelf)
+            diff = get_hashdiff_image(candidate_img, spine_image)
             if diff < min_diff:
                 min_diff = diff
                 most_likely_author = author
@@ -206,7 +206,27 @@ def find_closest_image(urls, book_shelf):
     return most_likely_author
 
 
-def get_ddc_api(ISBN=None, title=None, author_name=None):
+def extract_urls_from_api(response):
+    # TODO
+    return urls
+
+# TODO
+
+
+def get_closest_titlestring(response, detected_title):
+    pass
+
+# TODO
+
+
+def get_best_match_response(response, detected_title, spine_image):
+    urls = extract_urls_from_api(response)
+    find_closest_image(urls, spine_image)
+    best_match_response = get_closest_titlestring(response, detected_title)
+    return best_match_response
+
+
+def get_ddc_api(ISBN=None, title=None, author_name=None, image=None):
     print('calling api to get ddc ')
     ddc = None
 
@@ -222,7 +242,7 @@ def get_ddc_api(ISBN=None, title=None, author_name=None):
         if author_name is None:
             author_name = mode_authors(get_author_name(response))
             print(author_name)
-
+        # best_match_response =get_best_match_response()
         ISBN, genre = extract_IBSN_from_api_return(response, author_name)
         print(ISBN, genre)
         # print(ISBN)
