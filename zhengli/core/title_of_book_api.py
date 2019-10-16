@@ -2,6 +2,7 @@ import re
 from collections import defaultdict
 from io import BytesIO
 
+import cv2
 import imagehash
 import requests
 from PIL import Image
@@ -21,8 +22,11 @@ def form_url(ISBN=None):
         An url that will be sent to openlibrary/org/api.
 
     """
-    url = 'https://openlibrary.org/api/books?bibkeys=ISBN:' + \
-        ISBN + '&jscmd=data&format=json'
+    # url = 'https://openlibrary.org/api/books?bibkeys=ISBN:' + \
+    #     ISBN + '&jscmd=data&format=json'
+
+    url = 'http://classify.oclc.org/classify2/Classify?isbn=' + ISBN +\
+        '&summary=true'
 
     return url
 
@@ -56,26 +60,16 @@ def get_ISBN_from_title(title):
                         + title + "}", headers=h)
 
     results = resp.json()['books']
-    print('Acquired following info about the book {}'.format(results))
-    return results
+    # print('Acquired following info about the book {}'.format(results))
+    dict_results = order_results_into_dict(results)
+    return dict_results
 
 
 def order_results_into_dict(results):
     '''
-    order the response from get_ISBN_from_title by title as a key
+    order the response from get_ISBN_from_title into a dictionary
     '''
-    dict_of_results = {}
-    for x in range(len(results)):
-        key = results[x]['title']
-        value = results[x]
-
-        if x == 0:
-            dict_of_results[key] = value
-        elif key not in dict_of_results.keys():
-            dict_of_results[key] = value
-        else:
-            key = str(key) + str(x)
-            dict_of_results[key] = value
+    dict_of_results = dict(zip(range(len(results)), results))
     return dict_of_results
 
 
@@ -112,30 +106,25 @@ def mode_authors(list_of_authors):
     return max(author_count, key=lambda key: author_count[key])
 
 
-def extract_IBSN_from_api_return(results, author):
+def extract_IBSN_from_api_return(results):
     # note that this gets the last ISBN in the list--there maybe multiple
     # copies
     # of the book--hopefully all additions have the same dewey decimal number
-    ISBN = None
-    right = []
+    ISBN = []
     genre = None
 
-    for x in results:
-        # print(x.keys)
-        try:
-            if 'authors' in x.keys():
-                if author in x['authors']:
-                    # print(x)
-                    right.append(x['isbn13'])
-                    right.append(x['isbn'])
+    # print(x.keys)
+    if 'isbn13' in results.keys():
+        ISBN.append(results['isbn13'])
+    elif 'isbn' in results.keys():
+        ISBN.append(results['isbn'])
+    else:
+        print('no isbn found')
 
-                    if 'subjects' in x.keys():
-                        genre = x['subjects']
+    if 'subjects' in results.keys():
+        genre = results['subjects']
 
-        except Exception:
-            pass
-
-    return right, genre
+    return ISBN[0], genre
 
 
 def get_response(url):
@@ -145,18 +134,25 @@ def get_response(url):
 
 
 def extract_ddc(text):
-    try:
-        dewey_pattern = re.compile(r'(\\d{3}/.\\d+?\/?d)')
-        ddc = dewey_pattern.findall(text)[0]
-        # print('Dewey decimal code of the book is {}'.format(ddc))
-    except Exception:
-        if 'fiction' in text:
-            return 813.
-        else:
-            print("dewey_decimal_not_found")
-            ddc = None
+    # try:
+    #     dewey_pattern = re.compile(r'(\\d{3}/.\\d+?\/?d)')
+    #     ddc = dewey_pattern.findall(text)[0]
+    #     # print('Dewey decimal code of the book is {}'.format(ddc))
+    # except Exception:
+    #     if 'fiction' in text:
+    #         return 813.
+    #     else:
+    #         print("dewey_decimal_not_found")
+    #         ddc = None
 
-    return ddc
+    index = text.find('nsfa')
+    ddc = text[index + 6:index + 11]
+    if ddc.isdigit():
+        return ddc
+    elif ddc == 'FIC':
+        return '813.0'
+    else:
+        return None
 
 
 def check_genre_ddc(genre):
@@ -168,6 +164,8 @@ def check_genre_ddc(genre):
             return 810
         if x.lower() == 'journalism':
             return '070'
+        if x.lower() == 'literacy':
+            return 302
 
     return 000.0
 
@@ -190,45 +188,143 @@ def get_hashdiff_image(img1, img2):
     return abs(hash - otherhash)
 
 
-def find_closest_image(urls, spine_image):
-    most_likely_author = None
+def extract_key_from_api(dict_of_results, key='image'):
+    '''
+    return list of image urls from books
+    '''
+    field_urls = {}
+    for k, item in dict_of_results.items():
+        try:
+            field_urls[k] = item[key]
+        except Exception:
+            pass
+    return field_urls
+
+
+def levenshteinDistance(s1, s2):
+    if len(s1) > len(s2):
+        s1, s2 = s2, s1
+
+    distances = range(len(s1) + 1)
+    for i2, c2 in enumerate(s2):
+        distances_ = [i2 + 1]
+        for i1, c1 in enumerate(s1):
+            if c1 == c2:
+                distances_.append(distances[i1])
+            else:
+                distances_.append(
+                    1 + min((distances[i1], distances[i1 + 1],
+                             distances_[-1])))
+        distances = distances_
+    return distances[-1]
+
+
+def load_publisher(list_path):
+    with open(list_path, "r") as text_file:
+        publisher_list = text_file.read().split(',')
+
+    return publisher_list
+
+
+def find_closest_image(response, spine_image):
+    urls = extract_key_from_api(response, 'image')
     min_diff = 1e6
-    for url, author in urls:
+    closest_item_index = []
+    for k, url in urls.items():
         try:
             candidate_img = get_image_book(url)
             diff = get_hashdiff_image(candidate_img, spine_image)
             if diff < min_diff:
                 min_diff = diff
-                most_likely_author = author
+                closest_item_index.append(k)
         except Exception:
             pass
 
-    return most_likely_author
+    return closest_item_index
 
 
-def extract_urls_from_api(response):
-    # TODO
-    return urls
+def find_closest_titlestring(response, detected_text):
+    titles = extract_key_from_api(response, 'title')
+    min_diff = 1e6
+    closest_item_index = []
+    detected_title = max(detected_text, key=len)
+    for k, url in titles.items():
+        try:
+            diff = levenshteinDistance(detected_title, url)
+            if diff <= min_diff:
+                min_diff = diff
+                closest_item_index.append(k)
+        except Exception:
+            pass
+
+    return closest_item_index
+
+
+def get_potential_publisher(publisher_list, detected_text):
+    print('checking if there is publisher in detected text')
+    min_diff = 3
+    potential_publisher = None
+    for text in detected_text:
+        for publisher in publisher_list:
+            diff = levenshteinDistance(text, publisher)
+            if diff <= min_diff:
+                print('there is a pontential publisher{}'.format(publisher))
+                min_diff = diff
+                potential_publisher = publisher
+    return potential_publisher
+
+
+def find_closest_publisherstring(response, detected_text, publisher_list):
+    publishers = extract_key_from_api(response, 'publisher')
+    min_diff = 3
+    closest_item_index = []
+    detected_publisher = get_potential_publisher(publisher_list, detected_text)
+    for k, url in publishers.items():
+        try:
+            diff = levenshteinDistance(detected_publisher, url)
+            if diff <= min_diff:
+                min_diff = diff
+                closest_item_index.append(k)
+        except Exception:
+            pass
+
+    return closest_item_index
 
 # TODO
 
 
-def get_closest_titlestring(response, detected_title):
-    pass
-
-# TODO
-
-
-def get_best_match_response(response, detected_title, spine_image):
-    urls = extract_urls_from_api(response)
-    find_closest_image(urls, spine_image)
-    best_match_response = get_closest_titlestring(response, detected_title)
+def get_best_match_response(response,
+                            detected_text, publisher_list):
+    spine_image = cv2.imread(detected_text[-1])
+    image_closest_item_index = find_closest_image(response, spine_image)
+    # closest_item = response[image_closest_item_index]
+    string_closest_item_index = find_closest_titlestring(
+        response, detected_text)
+    publisherclosest_item_index = find_closest_publisherstring(response,
+                                                               detected_text,
+                                                               publisher_list)
+    print(image_closest_item_index, string_closest_item_index,
+          publisherclosest_item_index)
+    lst = image_closest_item_index + \
+        string_closest_item_index + publisherclosest_item_index
+    best_match_index = max(set(lst), key=lst.count)
+    best_match_response = response[best_match_index]
+    print('best match book is{}'.format(best_match_response))
     return best_match_response
 
 
-def get_ddc_api(ISBN=None, title=None, author_name=None, image=None):
+def get_ddc_from_isbn(isbn_string):
+    url = form_url(isbn_string)
+    response = get_response(url)
+    ddc = extract_ddc(response)
+    return ddc
+
+
+def get_ddc_api(ISBN=None, title=None, author_name=None,
+                detected_text=None, pub_list_path=None, image_id=None):
     print('calling api to get ddc ')
     ddc = None
+    publisher_list = load_publisher(pub_list_path)
 
     if ISBN is not None:
         url = form_url(ISBN)
@@ -238,25 +334,21 @@ def get_ddc_api(ISBN=None, title=None, author_name=None, image=None):
 
     else:
         response = get_ISBN_from_title(title)
-        dict_of_results = order_results_into_dict(response)
-        if author_name is None:
-            author_name = mode_authors(get_author_name(response))
-            print(author_name)
-        # best_match_response =get_best_match_response()
-        ISBN, genre = extract_IBSN_from_api_return(response, author_name)
+
+        best_match_response = get_best_match_response(response,
+                                                      detected_text,
+                                                      publisher_list)
+        ISBN, genre = extract_IBSN_from_api_return(
+            best_match_response)
         print(ISBN, genre)
-        # print(ISBN)
-        for x in ISBN:
-            if not ddc:
-                url = form_url(x)
-                response = get_response(url)
-                ddc = extract_ddc(response)
-                if ddc is not None:
-                    return ddc, dict_of_results
-                else:
-                    pass
+        url = form_url(ISBN)
+        response = get_response(url)
+        ddc = extract_ddc(response)
         if ddc is None and genre is not None:
+            print('ddc is none and genre is not none')
             ddc = check_genre_ddc(genre)
-            return ddc, dict_of_results
-    print('ddc is {}'.format(ddc))
-    return ddc, dict_of_results
+
+        print('ddc is {} and best match book is {}'.
+              format(ddc, best_match_response))
+
+    return ddc, best_match_response

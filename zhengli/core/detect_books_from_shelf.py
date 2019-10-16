@@ -498,7 +498,6 @@ def get_lines_from_img(img, levels, debug=False):
         min_y = np.min(ys)
         max_y = np.max(ys)
 
-        #print('std ratio', np.std(ys)/np.std(xs))
         spread = (np.max(ys) - np.min(ys)) / (np.max(xs) - np.min(xs))
 
         # Line is vertical
@@ -708,14 +707,17 @@ def get_book_lines(img, angles=[0], spaces=['h'], debug=False):
 
         # erosion and dilation
         '''
-        A set of operations that process images based on shapes. Morphological operations
-        apply a structuring element to an input image and generate an output image.
+        A set of operations that process images based on shapes.
+        Morphological operations
+        apply a structuring element to an input image and generate
+        an output image.
 
         The most basic morphological operations are two: Erosion and Dilation.
         They have a wide array of uses, i.e. :
 
         Removing noise
-        Isolation of individual elements and joining disparate elements in an image.
+        Isolation of individual elements and joining disparate elements
+        in an image.
         Finding of intensity bumps or holes in an image
         '''
         # Vertical erode
@@ -780,8 +782,11 @@ def get_book_lines(img, angles=[0], spaces=['h'], debug=False):
                 [0, 169, 55]) / 255., lw=6)
 
         for num, rect in enumerate(rectangles):
-            rect_box = plt.Rectangle((rect[0], rect[1]), (rect[2] - rect[0] + 10), (rect[3] - rect[1]), fill=False,
-                                     linewidth=2, edgecolor='r', facecolor='none')
+            rect_box = plt.Rectangle((rect[0], rect[1]),
+                                     (rect[2] - rect[0] + 10),
+                                     (rect[3] - rect[1]), fill=False,
+                                     linewidth=2, edgecolor='r',
+                                     facecolor='none')
             currentAxis = plt.gca()
             # Add the patch to the Axes
             currentAxis.add_patch(rect_box)
