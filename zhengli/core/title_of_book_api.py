@@ -53,6 +53,7 @@ def form_url_title(title='here is where we meet'):
 
 
 def get_ISBN_from_title(title):
+    print('calling api to get isbn')
     h = {'Authorization': '43360_fd60754106422e4ff2600025312a1118'}
     title = title.title()
 
@@ -133,6 +134,15 @@ def get_response(url):
     return response.text
 
 
+def findall(p, s):
+    '''Yields all the positions of
+    the pattern p in the string s.'''
+    i = s.find(p)
+    while i != -1:
+        yield i
+        i = s.find(p, i + 1)
+
+
 def extract_ddc(text):
     # try:
     #     dewey_pattern = re.compile(r'(\\d{3}/.\\d+?\/?d)')
@@ -145,14 +155,20 @@ def extract_ddc(text):
     #         print("dewey_decimal_not_found")
     #         ddc = None
 
-    index = text.find('nsfa')
-    ddc = text[index + 6:index + 11]
-    if ddc.isdigit():
-        return ddc
-    elif ddc == 'FIC':
-        return '813.0'
-    else:
-        return None
+    potential_ddcs = [text[i + 6:i + 11].strip()for i in findall('nsfa', text)]
+    print(potential_ddcs)
+    for ddc in potential_ddcs:
+        if ddc[:3].isdigit():
+            print('valid ddc')
+            return ddc
+        elif 'FIC' in ddc.strip():
+            print('FIC found')
+            ddc = '813.0'
+        else:
+            print('NONE')
+            ddc = None
+    print('final ddc')
+    return ddc
 
 
 def check_genre_ddc(genre):
