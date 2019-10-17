@@ -154,21 +154,17 @@ def extract_ddc(text):
     #     else:
     #         print("dewey_decimal_not_found")
     #         ddc = None
-
+    print('response from api call to get ddc is{}'.format(text))
     potential_ddcs = [text[i + 6:i + 11].strip()for i in findall('nsfa', text)]
-    print(potential_ddcs)
-    for ddc in potential_ddcs:
-        if ddc[:3].isdigit():
-            print('valid ddc')
-            return ddc
-        elif 'FIC' in ddc.strip():
-            print('FIC found')
-            ddc = '813.0'
-        else:
-            print('NONE')
-            ddc = None
-    print('final ddc')
-    return ddc
+    print('potential ddcs', potential_ddcs)
+    if any([ddc[:3].isdigit() for ddc in potential_ddcs]):
+        print('valid ddc')
+        return next(ddc for ddc in potential_ddcs if ddc[:3].isdigit())
+    elif any(['FIC' in ddc.strip() for ddc in potential_ddcs]):
+        print('FIC found')
+        return '813.0'
+    else:
+        return None
 
 
 def check_genre_ddc(genre):
