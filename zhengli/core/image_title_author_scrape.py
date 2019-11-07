@@ -2,11 +2,16 @@
 import csv
 import io
 
+from google.cloud import vision
+
 
 def detect_text(path):
     """Detects text in the file."""
-    from google.cloud import vision
-    client = vision.ImageAnnotatorClient()
+
+    print('calling api to recognize text from image')
+
+    client = vision.ImageAnnotatorClient.from_service_account_json(
+        'google_api_cred.json')
 
     with io.open(path, 'rb') as image_file:
         content = image_file.read()
