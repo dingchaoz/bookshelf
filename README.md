@@ -39,6 +39,7 @@ Zhengli's algorithm:
 - Return the following information about the books: title, author, publisher, publishing date, ISBN, deway decimal number.
 
 ## Authors
+Sarah Hudspeth, Dingchao Zhang
 
 ## Contributing
 Contributions, issues and feature requests are welcome.
