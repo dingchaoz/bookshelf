@@ -7,6 +7,19 @@ Future Features:
 Organize books by genre and categories.
 
 ## How to use Zhengli
+```
+git clone https://github.com/dingchaoz/bookshelf.git
+docker build -t zhengli .
+docker run --rm -p 5000:8080 shelf 
+```
+then send a book shelf image to the service
+```
+curl -X POST -H 'content-type: application/json' --data '{"file":"IMG_20190904_155939359.jpg"}' http://127.0.0.1:5000/api
+```
+sample information returned about the books from the shelf image
+```
+
+```
 
 ## How does Zhengli work?
 At a high level, Zhengli uses a combination of computer vision, image processing, and natural language processing to detect books in images of bookshelves. Breaking it down a little further, these are the main steps involved. A more detailed description of each step in the algorithm is presented in the following sections.
