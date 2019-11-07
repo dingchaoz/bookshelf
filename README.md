@@ -1,4 +1,29 @@
-## auto bookshelf organizing
+## Zhengli
+
+Zhengli---Catalogue and organize your book collection based off images shot from your camera. We are offering an API service
+that uses data science to automatically detect and recognize books that it finds in user submitted images of bookshelves. 
+
+Future Features:
+Organize books by genre and categories.
+
+## How to use Zhengli
+
+## How does Zhengli work?
+At a high level, Zhengli uses a combination of computer vision, image processing, and natural language processing to detect books in images of bookshelves. Breaking it down a little further, these are the main steps involved. A more detailed description of each step in the algorithm is presented in the following sections.
+
+Zhengli's algorithm:
+
+Detect all instances of book shapes in the image
+Split books into individual one by its spine
+Detect all instances of text in each book image
+Spell correct text detected
+Extract book title, publisher, author from detected text associated with a book
+Perform a search on the book, titile and publisher for a match on open library API
+Validate the book using its original camera image and its image on open library website
+Get the ISBN number from the book
+Get the Deway Decimal number and other
+Return the following information about the books: title, author, publisher, publishing date, ISBN, deway decimal number.
+
 
 ### Create virtual environment
 
