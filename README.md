@@ -37,3 +37,10 @@ Zhengli's algorithm:
 - Get the ISBN number from the book
 - Get the Deway Decimal number and other
 - Return the following information about the books: title, author, publisher, publishing date, ISBN, deway decimal number.
+
+## Authors
+
+## Contributing
+Contributions, issues and feature requests are welcome.
+Feel free to check issues page if you want to contribute.
+Check the contributing guide.
