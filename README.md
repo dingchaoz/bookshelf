@@ -1,4 +1,5 @@
-## Zhengli
+### @Zhengli
+![alt text](https://raw.githubusercontent.com/andreasbm/readme/master/assets/logo-shadow.png)
 
 Zhengli---Catalogue and organize your book collection based off images shot from your camera. We are offering an API service
 that uses data science to automatically detect and recognize books that it finds in user submitted images of bookshelves. 
@@ -10,7 +11,7 @@ Organize books by genre and categories.
 ```
 git clone https://github.com/dingchaoz/bookshelf.git
 docker build -t zhengli .
-docker run --rm -p 5000:8080 shelf 
+docker run --rm -p 5000:8080 zhengli 
 ```
 then send a book shelf image to the service
 ```
