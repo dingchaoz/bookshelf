@@ -1,6 +1,6 @@
 import os
 
-from symspellpy.symspellpy import SymSpell, Verbosity  # import the module
+from symspellpy.symspellpy import SymSpell  # import the module
 
 max_edit_distance_dictionary = 2
 prefix_length = 7
