@@ -7,7 +7,10 @@ that uses data science to automatically detect and recognize books that it finds
 Future Features:
 Organize books by genre and categories.
 
-## How to use Zhengli
+
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#how-to-use-zhengli)
+
+## ➤ How to use Zhengli
 ```
 git clone https://github.com/dingchaoz/bookshelf.git
 docker build -t zhengli .
@@ -22,7 +25,10 @@ sample information returned about the books from the shelf image
 ddc is 793.9 and best match book is {'title': 'Warcraft Ii: Beyond The Dark Portal: Official Secrets And Solutions (secrets Of The Games Series)', 'image': 'https://images.isbndb.com/covers/78/71/9780761507871.jpg', 'title_long': 'Warcraft Ii: Beyond The Dark Portal: Official Secrets And Solutions (secrets Of The Games Series)', 'date_published': '1996', 'publisher': 'Prima Games', 'synopsys': 'With This Expansion Disk To Warcraft Ii: Tides Of Darkness, Players Can Extend Their Warcraft Experience As They Delve Into The Orcs Homeland For The First Time To Experience An Entirely New Set Of Challenges. Players Can Compete In Head-to-head Battles Against As Many As Eight Players.', 'authors': ['Mark Walker'], 'isbn13': '9780761507871', 'msrp': '14.99', 'publish_date': '1996', 'binding': 'Paperback', 'isbn': '0761507876'}
 ```
 
-## How does Zhengli work?
+
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#how-does-zhengli-work)
+
+## ➤ How does Zhengli work?
 At a high level, Zhengli uses a combination of computer vision, image processing, and natural language processing to detect books in images of bookshelves. Breaking it down a little further, these are the main steps involved. A more detailed description of each step in the algorithm is presented in the following sections.
 
 Zhengli's algorithm:
@@ -38,10 +44,16 @@ Zhengli's algorithm:
 - Get the Deway Decimal number and other
 - Return the following information about the books: title, author, publisher, publishing date, ISBN, deway decimal number.
 
-## Authors
+
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#authors)
+
+## ➤ Authors
 Sarah Hudspeth, Dingchao Zhang
 
-## Contributing
+
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/colored.png)](#contributing)
+
+## ➤ Contributing
 Contributions, issues and feature requests are welcome.
 Feel free to check issues page if you want to contribute.
 Check the contributing guide.
