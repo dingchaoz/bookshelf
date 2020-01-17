@@ -23,12 +23,12 @@ ddc is 793.9 and best match book is {'title': 'Warcraft Ii: Beyond The Dark Port
 ```
 ## Deploy zhengli to EC2
 First we need to share the image to Docker hub so you may download it from EC2 instance, there are 3 simple steps:
-```docker login --username username```
+- ```docker login --username username```
 prompts for password if you omit --password which is recommended as it doesn't store it in your command history
 then we tag it with your username and repo name
-```docker tag my-image username/my-repo```
+- ```docker tag my-image username/my-repo```
 push to docker hub
-```docker push username/my-repo```
+- ```docker push username/my-repo```
 Now that your image is online, anyone who has docker installed can play with your app by typing just a single command.
 - Go to EC2 in AWS, configuring inboud ports in security group:
 Go to the "Network & Security" -> Security Group settings in the left hand navigation,find the Security Group that your instance is apart of Click on Inbound Rules,u se the drop down and add HTTP (port 80). 
