@@ -56,7 +56,9 @@ Once docker is installed, run the following command to start the app.
 ```
 docker run -d -p 80:8080 username/repo
 ```
-Copy paste the public ip address of the EC2 instance into the browser, the app should be alive there.
+Copy paste the public ip address of the EC2 instance, then paste it into the following curl request, for example ec2-174-129-182-222.compute-1.amazonaws.com is the public IP in this case
+```
+curl -X POST -H 'content-type: application/json' --data '{"file":"IMG_20190904_155939359.jpg"}' ec2-174-129-182-222.compute-1.amazonaws.com:80/api```
 - Stop and prune the containers
 ```
 docker stop $(docker ps -a -q)
