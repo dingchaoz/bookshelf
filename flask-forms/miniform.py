@@ -39,5 +39,18 @@ class ReusableForm(Form):
 
         return render_template('hello.html', form=form)
 
+    @app.route("/upload_pictures", methods=['GET', 'POST'])
+    def upload():
+        return(render_template('upload_pictures.html'))
+
+    @app.route("/recommend", methods=['GET', 'POST'])
+    def recommend():
+        return(render_template('recommend.html'))
+
+    @app.route("/home",methods=['GET', 'POST'] )
+    def home():
+        return(render_template('hello.html'))
+
+
 if __name__ == "__main__":
     app.run()
