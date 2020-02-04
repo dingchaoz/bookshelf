@@ -15,41 +15,50 @@ class ReusableForm(Form):
     password = TextField('Password:', validators = [validators.required(), \
                                             validators.Length(min=4, max=35)])
 
-    @app.route("/", methods=['GET', 'POST'])
-    def hello():
-        form = ReusableForm(request.form)
 
-        print(form.errors)
+@app.route("/", methods=['GET', 'POST'])
+def hello():
+    form = ReusableForm(request.form)
 
-        if request.method == 'POST':
-            name = request.form['name']
-            password=request.form['password']
-            email = request.form['email']
+    print(form.errors)
 
-            print(name, " ", email, " ", password)
+    if request.method == 'POST':
+        name = request.form['name']
+        password=request.form['password']
+        email = request.form['email']
 
-        if form.validate():
+        print(name, " ", email, " ", password)
+
+    if form.validate():
             # comment here
-            flash('Thank you for your registration ' + name)
+        flash('Thank you for your registration ' + name)
 
-            #if not registering to save file, enter alternate storage options
+        #if not registering to save file, enter alternate storage options
 
-        else:
-            flash('All the form fields are required. ')
+    else:
+        flash('All the form fields are required. ')
 
-        return render_template('hello.html', form=form)
+    return render_template('index.html', form=form)
 
-    @app.route("/upload_pictures", methods=['GET', 'POST'])
-    def upload():
-        return(render_template('upload_pictures.html'))
 
-    @app.route("/recommend", methods=['GET', 'POST'])
-    def recommend():
-        return(render_template('recommend.html'))
+@app.route("/registered", methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        form = request.form
+        name = request.form['name']
+    return(render_template('registered.html', form=form))
 
-    @app.route("/home",methods=['GET', 'POST'] )
-    def home():
-        return(render_template('hello.html'))
+@app.route("/upload_pictures/<string:name>", methods=['GET', 'POST'])
+def upload():
+    return(render_template('upload_pictures.html/<name>', form=form))
+
+@app.route("/recommend", methods=['GET', 'POST'])
+def recommend():
+    return(render_template('recommend.html'))
+
+@app.route("/home",methods=['GET', 'POST'] )
+def home():
+    return(render_template('index.html'))
 
 
 if __name__ == "__main__":

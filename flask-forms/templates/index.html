@@ -1,23 +1,42 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.283.1.min.js"></script>
-    <script src="./app.js"></script>
-    <script>
-       function getHtml(template) {
-          return template.join('\n');
-       }
-       listAlbums();
-    </script>
-  </head>
-  <body>
+<title>Reusable Form Demo</title>
+        	 	<link rel="stylesheet" media="screen" href="static/bootstrap.min.css">
+        	 	<link rel="stylesheet" href="static/bootstrap-theme.min.css">
+       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<div class="container">
+<h2>Welcome to Zhengli(b)</h2>
+  <h4>Let's organize your books!</h4>
+<form action="http://127.0.0.1:5000/registered" method="post" role="form">
 
-    <meta name="viewport" content = "width=device-width, initial-scale=1.0">
-    <link href="static/bootstrap.min.css" rel="stylesheet" media = "screen">
-     <div class="container">
-  <h1>The Bookshelf App</h1>
-      <div id="app"></div>
-    <p> Click <a href="/">here </a> to go home.</p>
-    </div>
-  </body>
-</html>
+<div class="form-group">
+      <label for="name">Name:</label>
+  <input type="text" class="form-control" id="name" name="name" \
+         placeholder="What's your name?">
+      <label for="email">Email:</label>
+  <input type="text" class="form-control" id="email" name="email" \
+         placeholder="Your email will be used to email your results.">
+  <label for="password">Password:</label>
+  <input type ="text" class="form-control" id="password" name="password" \
+     placeholder="Please create a password if you would like to store results.">
+ </div>
+
+<button type="submit" class="btn btn-success">Submit</button>
+</form>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+
+{% for message in messages %}
+{% if "Error" not in message[1]: %}
+<div class="alert alert-info">
+    <strong>Success! </strong> { { message[1] }}</div>
+{% endif %}
+
+{% if "Error" in message[1]: %}
+<div class="alert alert-warning">
+                { { message[1] }}</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+</div>

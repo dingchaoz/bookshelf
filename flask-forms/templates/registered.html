@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> BookShelf Organizer (Zhenglib)</title>
+        <meta name="viewport" content = "width=device-width, initial-scale=1.0">
+        <link href="static/bootstrap.min.css" rel="stylesheet" media = "screen">
+    </head>
+<body>
+<div class="container">
+
+
+
+
+<h2>Welcome to Zhengli(b)</h2>
+<h4>Let's organize your books, {{form.name}}!</h4>
+Is this info correct?
+<br>
+{%for k, v in form.items() %}
+<table>
+<tr>  {{k}}
+  {{v}}
+</table>
+{%endfor%}
+<div class = "Bookshelf">
+  <br>
+  <p> Click <a href="/upload_pictures/<name>">here </a> to upload your bookshelf images.</p>
+  <br>
+  <p> Click <a href="/recommend">here </a> to get a book recommendation.</p>
+</body>
