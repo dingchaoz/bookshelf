@@ -9,8 +9,6 @@
 <div class="container">
 
 
-
-
 <h2>Welcome to Zhengli(b)</h2>
 <h4>Let's organize your books, {{form.name}}!</h4>
 Is this info correct?
@@ -23,7 +21,7 @@ Is this info correct?
 {%endfor%}
 <div class = "Bookshelf">
   <br>
-  <p> Click <a href="/upload_pictures/<name>">here </a> to upload your bookshelf images.</p>
+  <p> Click <a href="/upload_pictures/{{form.name}}/">here </a> to upload your bookshelf images.</p>
   <br>
-  <p> Click <a href="/recommend">here </a> to get a book recommendation.</p>
+  <p> Click <a href="/recommend/{{form.name}}/">here </a> to get a book recommendation.</p>
 </body>
